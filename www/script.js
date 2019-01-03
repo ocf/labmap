@@ -135,7 +135,7 @@ function updateMap(desktops_in_use) {
     }
 }
 
-// Start this request before the page finishes loading
+// Start the HTTP request to get today's hours before the page finishes loading
 var promise_get_hours = hours_today();
 
 window.onload = function() {
