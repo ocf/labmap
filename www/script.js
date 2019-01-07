@@ -1,4 +1,6 @@
-mapping = {};
+'use strict';
+
+const mapping = {};
 mapping["sinkhole"] = "c1";
 mapping["destruction"] = "c2";
 mapping["firewhirl"] = "c3";
@@ -161,7 +163,7 @@ window.onload = function() {
 
     // Only update hours with the results from this request after the page has finished loading
     promise_get_hours.then(function(hours) {
-        if (hours[0] != null) {
+        if (hours[0] !== null) {
             hours = hours[0]
             var start = document.getElementById('starthours');
             var end = document.getElementById('endhours');

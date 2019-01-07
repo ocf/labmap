@@ -17,4 +17,4 @@ push-image:
 
 .PHONY: web-resources
 web-resources:
-	make -C www
+	$(MAKE) -C www
