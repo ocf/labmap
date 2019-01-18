@@ -1,0 +1,20 @@
+{
+  "name": "ocf-labmap",
+  "version": "0.1.0",
+  "description": "OCF labmap sources",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ocf/labmap.git"
+  },
+  "author": "Open Computing Facility <sm+packages@ocf.berkeley.edu>",
+  "license": "(Apache-2.0 OR GPL-3.0)",
+  "bugs": {
+    "url": "https://github.com/ocf/labmap/issues"
+  },
+  "homepage": "https://github.com/ocf/labmap#readme",
+  "devDependencies" : {
+    "typescript": "^3.2.4",
+    "sass": "^1.16.1",
+    "tslint": "^5.12.1"
+  }
+}
