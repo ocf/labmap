@@ -97,13 +97,13 @@ function get(url: string): Promise<string> {
   });
 }
 
-function getDesktopsInUse() {
+function getDesktopsInUse(): Promise<string[]> {
     return get("https://www.ocf.berkeley.edu/api/lab/desktops").then(
         (response) => JSON.parse(response)["public_desktops_in_use"],
     );
 }
 
-function getHoursToday() {
+function getHoursToday(): Promise<Array<string | null>> {
     return get("https://www.ocf.berkeley.edu/api/hours/today").then(
         (response) => JSON.parse(response),
     );
@@ -177,14 +177,14 @@ window.onload = function() {
     setInterval(() => getDesktopsInUse().then(updateMap), 2500);
 
     // Only update hours with the results from this request after the page has finished loading
-    promiseGetHours.then((hours) => {
-        if (hours[0] !== null) {
-            hours = hours[0];
+    promiseGetHours.then((hoursArray) => {
+        const hours = hoursArray[0];
+        if (hours !== null) {
             const start = document.getElementById("starthours");
             const end = document.getElementById("endhours");
 
             if (start == null) {
-                console.log("document has not start time");
+                console.log("document has no start time");
             } else {
                 start.textContent = shortTime(hours[0]);
             }
@@ -195,7 +195,7 @@ window.onload = function() {
                 end.textContent = shortTime(hours[1]);
             }
 
-            const closingTime = hours[1];
+            const closingTime = parseInt(hours[1].split(":")[0], 10);
             const nightDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), closingTime, 0, 0, 0);
             const nightTimer = nightDate.getTime() - now.getTime();
             if (now.getHours() >= closingTime || now.getHours() <= 5) {
