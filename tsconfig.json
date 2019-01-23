@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "outDir": "./www",
+        "strict": true,
+        "target": "es2015"
+    },
+    "include": [
+        "src/script.ts"
+    ]
+}

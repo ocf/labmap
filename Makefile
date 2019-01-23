@@ -15,6 +15,11 @@ cook-image: web-resources
 push-image:
 	docker push $(DOCKER_TAG)
 
+.PHONY: compile
+compile:
+	tsc
+	tslint -p tsconfig.json
+
 .PHONY: web-resources
-web-resources:
+web-resources: compile
 	$(MAKE) -C www
