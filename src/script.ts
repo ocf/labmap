@@ -113,11 +113,6 @@ function enableNightMode(): void {
     document.body.classList.add("nightmode");
 }
 
-// This is a dummy that will get replaced (this is just to make typescript happy)
-function nightMode(): void {
-    /* this space intentionally left blank */
-}
-
 function updateMap(desktopsInUse: Iterable<string>): void {
     const idInUse = new Set();
     for (const desktopName of desktopsInUse) {
@@ -152,7 +147,7 @@ function updateMap(desktopsInUse: Iterable<string>): void {
     }
 }
 
-// Start the HTTP request to get today"s hours before the page finishes loading
+// Start the HTTP request to get today's hours before the page finishes loading
 const promiseGetHours = getHoursToday();
 
 window.onload = function() {
@@ -202,10 +197,10 @@ window.onload = function() {
                 enableNightMode();
             }
             if (nightTimer > 0) {
-                setTimeout(nightMode, nightTimer);
+                setTimeout(enableNightMode, nightTimer);
             }
         } else {
-            nightMode();
+            enableNightMode();
 
             const labhours = document.getElementById("labhours");
 
