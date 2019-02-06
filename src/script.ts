@@ -114,14 +114,14 @@ function enableNightMode(): void {
 }
 
 function updateClock(): void {
-    const m = new Date();
+    const time = new Date();
     const clockTextElm = document.getElementById("clock-text");
     if (clockTextElm == null) {
         console.log("clock text element not found");
     } else {
-        clockTextElm.textContent = (m.getHours() < 10 ? ("0" + m.getHours().toString()) : m.getHours())
-             + ":" + (m.getMinutes() < 10 ? ("0" + m.getMinutes().toString()) : m.getMinutes());
+        clockTextElm.textContent = time.toLocaleString("en-US", { hour: "numeric", minute: "numeric", hour12: true });
     }
+    setTimeout(updateClock, (60 - time.getSeconds()) * 1000);
 }
 
 function updateMap(desktopsInUse: Iterable<string>): void {
@@ -180,7 +180,6 @@ window.onload = function() {
     setTimeout(location.reload, reloadTimer);
 
     // Update the clock every second
-    setInterval(updateClock, 1000);
     updateClock();
 
     // Update the desktops every 2.5 seconds
