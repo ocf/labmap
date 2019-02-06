@@ -116,12 +116,15 @@ function enableNightMode(): void {
 function updateClock(): void {
     const time = new Date();
     const clockTextElm = document.getElementById("clock-text");
+    let formattedTimeText = time.toLocaleString("en-US", { hour: "numeric", minute: "numeric", hour12: true });
+    if (time.getSeconds() % 2) { // to make the blinking effect
+        formattedTimeText = formattedTimeText.replace(":", " ");
+    }
     if (clockTextElm == null) {
         console.log("clock text element not found");
     } else {
-        clockTextElm.textContent = time.toLocaleString("en-US", { hour: "numeric", minute: "numeric", hour12: true });
+        clockTextElm.textContent = formattedTimeText;
     }
-    setTimeout(updateClock, (60 - time.getSeconds()) * 1000);
 }
 
 function updateMap(desktopsInUse: Iterable<string>): void {
@@ -180,6 +183,7 @@ window.onload = function() {
     setTimeout(location.reload, reloadTimer);
 
     // Update the clock every second
+    setInterval(updateClock, 1000);
     updateClock();
 
     // Update the desktops every 2.5 seconds
