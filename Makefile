@@ -1,3 +1,7 @@
+BIN := venv/bin
+NPM := $(BIN)/npm
+SHELL := env PATH=$(BIN):$(PATH) /bin/bash
+
 DOCKER_REVISION ?= testing-$(USER)
 DOCKER_TAG = docker-push.ocf.berkeley.edu/labmap:$(DOCKER_REVISION)
 RANDOM_PORT := $(shell expr $$(( 8000 + (`id -u` % 1000) + 1 )))
@@ -16,10 +20,27 @@ push-image:
 	docker push $(DOCKER_TAG)
 
 .PHONY: compile
-compile:
-	tsc
-	tslint -p tsconfig.json
+compile: node_modules
+	$(NPM) run tsc
+	$(NPM) run tslint
 
 .PHONY: web-resources
 web-resources: compile
 	$(MAKE) -C www
+
+node_modules: venv package.json package-lock.json
+	$(BIN)/nodeenv -pq
+	$(NPM) install
+
+venv: requirements.txt
+	vendor/venv-update \
+					venv= $@ -ppython3 \
+					install= -r requirements.txt -r requirements-dev.txt
+
+.PHONY: clean
+clean:
+	rm -rf venv
+
+.PHONY: update-requirements
+update-requirements: venv
+	$(BIN)/upgrade-requirements
