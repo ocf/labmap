@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service
+spec:
+  selector:
+    app: labmap
+  ports:
+    - port: 80
+      targetPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment
+  labels:
+    app: labmap
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: labmap
+  template:
+    metadata:
+      labels:
+        app: labmap
+    spec:
+      containers:
+        - name: labmap-nginx
+          image: "docker.ocf.berkeley.edu/labmap:<%= version %>"
+          resources:
+            limits:
+              memory: 128Mi
+              cpu: 50m
+          ports:
+            - containerPort: 8000
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: virtual-host-ingress
+spec:
+  rules:
+    - host: labmap.ocf.berkeley.edu
+      http:
+        paths:
+          - backend:
+              serviceName: service
+              servicePort: 80
