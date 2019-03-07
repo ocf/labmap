@@ -175,7 +175,7 @@ function updateClock(): void {
     }
 }
 
-// Calle whenever we get new information about which desktops are in use
+// Called whenever we get new information about which desktops are in use
 function updateDesktops(desktopsInUse: Iterable<string>): void {
     const idInUse = new Set();
     for (const desktopName of desktopsInUse) {
