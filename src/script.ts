@@ -135,7 +135,7 @@ let todaysHours: TimeRange[] = [];
  */
 function isOpen(ranges: TimeRange[] = todaysHours, when: Time = getTime()): boolean {
     for (const range of ranges) {
-        if (when >= range[0] && when < range[0]) {
+        if (when >= range[0] && when < range[1]) {
             return true;
         }
     }
