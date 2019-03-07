@@ -33,15 +33,44 @@ const mapping: { [index: string]: string } = {
     hurricane: "c32",
 };
 
+// Time is represented as seconds since midnight
+type Time = number;
+type TimeRange = [Time, Time];
+
+function hour(t: Time): number {
+    return Math.floor(t / (60 * 60));
+}
+
+function minute(t: Time): number {
+    return Math.floor((t % (60 * 60)) / 60);
+}
+
+function second(t: Time): number {
+    // no leap seconds, sorry IERS
+    return Math.floor(t % 60);
+}
+
+function getTime(d: Date = new Date()): Time {
+    return d.getHours() * 60 * 60 + d.getMinutes() * 60 + d.getSeconds() + d.getMilliseconds() / 1000;
+}
+
 /**
- * Convert a time like "12:30:00" to a shortened time like "12:30 pm"
+ * Convert a time string to a Time instance.
+ */
+function parseTime(s: string): Time {
+    const ints = s.split(":").map((x) => parseInt(x, 10)).concat([0, 0]);
+    return ints[0] * 60 * 60 + ints[1] * 60 + ints[2];
+}
+
+/**
+ * Convert a Time to a shortened time like "12:30 pm"
  *
  * 12:00:00 -> 12 pm
  * 16:30:00 -> 4:30 pm
  * 09:15:15 -> 9:15:15 am
  */
-function shortTime(t: string): string {
-    const ints = t.split(":").map((x) => parseInt(x, 10));
+function shortTime(t: Time): string {
+    const ints = [hour(t), minute(t), second(t)];
 
     // only show significant parts of the time
     while (ints[ints.length - 1] === 0) {
@@ -97,22 +126,41 @@ function get(url: string): Promise<string> {
   });
 }
 
+let todaysHours: TimeRange[] = [];
+
+/**
+ * Returns True if the lab is open during the given timeranges at time `when`
+ * @param ranges The list of timeranges when the lab is open
+ * @param when The time to check, default is now
+ */
+function isOpen(ranges: TimeRange[] = todaysHours, when: Time = getTime()): boolean {
+    for (const range of ranges) {
+        if (when >= range[0] && when < range[1]) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function getDesktopsInUse(): Promise<string[]> {
     return get("https://www.ocf.berkeley.edu/api/lab/desktops").then(
         (response) => JSON.parse(response)["public_desktops_in_use"],
     );
 }
 
-function getHoursToday(): Promise<Array<string | null>> {
+function getHoursToday(): Promise<TimeRange[]> {
     return get("https://www.ocf.berkeley.edu/api/hours/today").then(
-        (response) => JSON.parse(response),
+        (resp) => JSON.parse(resp).map((x: string[]) => x.map(parseTime)),
     );
 }
 
-function enableNightMode(): void {
-    document.body.classList.add("nightmode");
+// Called every second to check if we should be in nightmode
+function updateTheme(): void {
+    document.body.classList.toggle("nightmode", !isOpen());
 }
 
+// Called every second
 function updateClock(): void {
     const time = new Date();
     const clockTextElm = document.getElementById("clock-text");
@@ -127,7 +175,8 @@ function updateClock(): void {
     }
 }
 
-function updateMap(desktopsInUse: Iterable<string>): void {
+// Called whenever we get new information about which desktops are in use
+function updateDesktops(desktopsInUse: Iterable<string>): void {
     const idInUse = new Set();
     for (const desktopName of desktopsInUse) {
         idInUse.add(mapping[desktopName]);
@@ -162,6 +211,28 @@ function updateMap(desktopsInUse: Iterable<string>): void {
     }
 }
 
+// Called whenever we get a new sample of today's hours
+function updateHours(hoursListing: TimeRange[]): void {
+    todaysHours = hoursListing;
+
+    // Convert the hoursListing to a human-readable format
+    const hoursText = todaysHours.map((range) =>
+        range.map(shortTime).join(" - "),
+    ).join(", ");
+
+    // Set the hours display on the website
+    document.getElementById("labhours")!.textContent = hoursText;
+
+    // Update hours again at midnight
+    const now = new Date();
+    const tomorrow = new Date(now.getTime() + (24 * 60 * 60 * 1000));
+    tomorrow.setHours(0, 0, 30);
+
+    setTimeout(() => {
+        getHoursToday().then(updateHours);
+    }, tomorrow.getTime() - now.getTime());
+}
+
 // Start the HTTP request to get today's hours before the page finishes loading
 const promiseGetHours = getHoursToday();
 
@@ -175,67 +246,18 @@ window.onload = function() {
         document.body.appendChild(tooltip);
     }
 
-    // Reload the page at 6am
-    const now = new Date();
-    let reloadTimer = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0, 0).getTime() - now.getTime();
-    if (reloadTimer < 0) {
-        reloadTimer += 24 * 60 * 60 * 1000;
-    }
-    setTimeout(location.reload, reloadTimer);
-
     // Update the clock every second
     setInterval(updateClock, 1000);
     updateClock();
 
     // Update the desktops every 2.5 seconds
-    setInterval(() => getDesktopsInUse().then(updateMap), 2500);
+    setInterval(() => getDesktopsInUse().then(updateDesktops), 2500);
 
     // Only update hours with the results from this request after the page has finished loading
     promiseGetHours.then((hoursArray) => {
-        const hours = hoursArray[0];
-        if (hours !== null) {
-            const start = document.getElementById("starthours");
-            const end = document.getElementById("endhours");
+        updateHours(hoursArray);
 
-            if (start == null) {
-                console.log("document has no start time");
-            } else {
-                start.textContent = shortTime(hours[0]);
-            }
-
-            if (end == null) {
-                console.log("document has no end time");
-            } else {
-                end.textContent = shortTime(hours[1]);
-            }
-
-            const closingTime = parseInt(hours[1].split(":")[0], 10);
-            const nightDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), closingTime, 0, 0, 0);
-            const nightTimer = nightDate.getTime() - now.getTime();
-            if (now.getHours() >= closingTime || now.getHours() <= 5) {
-                enableNightMode();
-            }
-            if (nightTimer > 0) {
-                setTimeout(enableNightMode, nightTimer);
-            }
-        } else {
-            enableNightMode();
-
-            const labhours = document.getElementById("labhours");
-
-            if (labhours == null) {
-                console.log("labhours element not found");
-            } else {
-                labhours.innerHTML = "";
-            }
-
-            const labtext = document.getElementById("labtext");
-
-            if (labtext == null) {
-                console.log("labtext element not found");
-            } else {
-                labtext.textContent = "Closed all day.";
-            }
-        }
+        // Every second, check if we need to switch to nightMode
+        setInterval(updateTheme, 1000);
     });
 };
