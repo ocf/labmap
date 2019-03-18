@@ -186,7 +186,6 @@ function updateDesktops(desktopsInUse: Iterable<string>): void {
     //       should be using instead. That better represents the purpose
     //       of this utility anyways.
     idInUse.add(mapping["eruption"]);
-    idInUse.add(mapping["invasion"]);
 
     for (const polygon of document.getElementsByClassName("comp")) {
         if (hasOverlap(polygon.classList, idInUse)) {
