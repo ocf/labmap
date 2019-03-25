@@ -214,10 +214,15 @@ function updateDesktops(desktopsInUse: Iterable<string>): void {
 function updateHours(hoursListing: TimeRange[]): void {
     todaysHours = hoursListing;
 
-    // Convert the hoursListing to a human-readable format
-    const hoursText = todaysHours.map((range) =>
-        range.map(shortTime).join(" - "),
-    ).join(", ");
+    let hoursText;
+    if (todaysHours.length === 0) {
+        hoursText = "Closed all day";
+    } else {
+        // Convert the hoursListing to a human-readable format
+        hoursText = todaysHours.map((range) =>
+            range.map(shortTime).join(" - "),
+        ).join(", ");
+    }
 
     // Set the hours display on the website
     document.getElementById("labhours")!.textContent = hoursText;
