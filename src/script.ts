@@ -31,6 +31,7 @@ const mapping: { [index: string]: string } = {
     chaos: "c28",
     blizzard: "c29",
     hurricane: "c32",
+    typhoon: "c33",
 };
 
 // Time is represented as seconds since midnight
