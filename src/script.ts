@@ -188,6 +188,9 @@ function updateDesktops(desktopsInUse: Iterable<string>): void {
     //       of this utility anyways.
     idInUse.add(mapping["eruption"]);
 
+    // outbreak is temporarily out of service
+    idInUse.add(mapping["outbreak"]);
+
     for (const polygon of document.getElementsByClassName("comp")) {
         if (hasOverlap(polygon.classList, idInUse)) {
             polygon.classList.add("occupied");
