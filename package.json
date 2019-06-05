@@ -13,9 +13,9 @@
   },
   "homepage": "https://github.com/ocf/labmap#readme",
   "devDependencies": {
-    "typescript": "^3.2.4",
-    "sass": "^1.16.1",
-    "tslint": "^5.12.1"
+    "sass": "^1.20.3",
+    "tslint": "^5.17.0",
+    "typescript": "^3.5.1"
   },
   "scripts": {
     "tsc": "tsc",
