@@ -1,25 +1,25 @@
 {
-  "name": "ocf-labmap",
-  "version": "0.1.0",
-  "description": "OCF labmap sources",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ocf/labmap.git"
-  },
-  "author": "Open Computing Facility <sm+packages@ocf.berkeley.edu>",
-  "license": "(Apache-2.0 OR GPL-3.0)",
-  "bugs": {
-    "url": "https://github.com/ocf/labmap/issues"
-  },
-  "homepage": "https://github.com/ocf/labmap#readme",
-  "devDependencies": {
-    "sass": "^1.22.10",
-    "tslint": "^5.19.0",
-    "typescript": "^3.6.2"
-  },
-  "scripts": {
-    "tsc": "tsc",
-    "tsc:w": "tsc -w",
-    "tslint": "tslint -p tsconfig.json"
-  }
+    "name": "ocf-labmap",
+    "version": "0.1.0",
+    "description": "OCF labmap sources",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ocf/labmap.git"
+    },
+    "author": "Open Computing Facility <sm+packages@ocf.berkeley.edu>",
+    "license": "(Apache-2.0 OR GPL-3.0)",
+    "bugs": {
+        "url": "https://github.com/ocf/labmap/issues"
+    },
+    "homepage": "https://github.com/ocf/labmap#readme",
+    "devDependencies": {
+        "sass": "^1.22.10",
+        "tslint": "^5.19.0",
+        "typescript": "^3.6.2"
+    },
+    "scripts": {
+        "tsc": "tsc",
+        "tsc:w": "tsc -w",
+        "tslint": "tslint -p tsconfig.json"
+    }
 }
