@@ -52,14 +52,22 @@ function second(t: Time): number {
 }
 
 function getTime(d: Date = new Date()): Time {
-    return d.getHours() * 60 * 60 + d.getMinutes() * 60 + d.getSeconds() + d.getMilliseconds() / 1000;
+    return (
+        d.getHours() * 60 * 60 +
+        d.getMinutes() * 60 +
+        d.getSeconds() +
+        d.getMilliseconds() / 1000
+    );
 }
 
 /**
  * Convert a time string to a Time instance.
  */
 function parseTime(s: string): Time {
-    const ints = s.split(":").map((x) => parseInt(x, 10)).concat([0, 0]);
+    const ints = s
+        .split(":")
+        .map((x) => parseInt(x, 10))
+        .concat([0, 0]);
     return ints[0] * 60 * 60 + ints[1] * 60 + ints[2];
 }
 
@@ -107,24 +115,24 @@ function hasOverlap<T>(x: Iterable<T>, set: Set<T>): boolean {
 
 // HTTP GET that returns a promise
 function get(url: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const req = new XMLHttpRequest();
-    req.open("GET", url);
+    return new Promise((resolve, reject) => {
+        const req = new XMLHttpRequest();
+        req.open("GET", url);
 
-    req.onload = function() {
-      if (req.status === 200) {
-        resolve(req.response);
-      } else {
-        reject(Error(req.statusText));
-      }
-    };
+        req.onload = function() {
+            if (req.status === 200) {
+                resolve(req.response);
+            } else {
+                reject(Error(req.statusText));
+            }
+        };
 
-    req.onerror = function() {
-      reject(Error("Network Error"));
-    };
+        req.onerror = function() {
+            reject(Error("Network Error"));
+        };
 
-    req.send();
-  });
+        req.send();
+    });
 }
 
 let todaysHours: TimeRange[] = [];
@@ -134,7 +142,10 @@ let todaysHours: TimeRange[] = [];
  * @param ranges The list of timeranges when the lab is open
  * @param when The time to check, default is now
  */
-function isOpen(ranges: TimeRange[] = todaysHours, when: Time = getTime()): boolean {
+function isOpen(
+    ranges: TimeRange[] = todaysHours,
+    when: Time = getTime(),
+): boolean {
     for (const range of ranges) {
         if (when >= range[0] && when < range[1]) {
             return true;
@@ -151,8 +162,8 @@ function getDesktopsInUse(): Promise<string[]> {
 }
 
 function getHoursToday(): Promise<TimeRange[]> {
-    return get("https://www.ocf.berkeley.edu/api/hours/today").then(
-        (resp) => JSON.parse(resp).map((x: string[]) => x.map(parseTime)),
+    return get("https://www.ocf.berkeley.edu/api/hours/today").then((resp) =>
+        JSON.parse(resp).map((x: string[]) => x.map(parseTime)),
     );
 }
 
@@ -164,15 +175,22 @@ function updateTheme(): void {
 // Called every second
 function updateClock(): void {
     const time = new Date();
-    const clockTextElm = document.getElementById("clock-text");
-    let formattedTimeText = time.toLocaleString("en-US", { hour: "numeric", minute: "numeric", hour12: true });
-    if (time.getSeconds() % 2) { // to make the blinking effect
+    const clockTextElms = document.getElementsByClassName("clock-text");
+    let formattedTimeText = time.toLocaleString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+    });
+    if (time.getSeconds() % 2) {
+        // to make the blinking effect
         formattedTimeText = formattedTimeText.replace(":", " ");
     }
-    if (clockTextElm == null) {
+    if (clockTextElms === null) {
         console.log("clock text element not found");
     } else {
-        clockTextElm.textContent = formattedTimeText;
+        Array.from(clockTextElms).forEach((e) => {
+            e.textContent = formattedTimeText;
+        });
     }
 }
 
@@ -215,26 +233,28 @@ function updateDesktops(desktopsInUse: Iterable<string>): void {
     }
 }
 
-// Called whenever we get a new sample of today's hours
+// Called whenever we get a new sample of today"s hours
 function updateHours(hoursListing: TimeRange[]): void {
     todaysHours = hoursListing;
 
-    let hoursText;
+    let hoursText = "";
     if (todaysHours.length === 0) {
         hoursText = "Closed all day";
     } else {
         // Convert the hoursListing to a human-readable format
-        hoursText = todaysHours.map((range) =>
-            range.map(shortTime).join(" - "),
-        ).join(", ");
+        hoursText = todaysHours
+            .map((range) => range.map(shortTime).join(" - "))
+            .join(", ");
     }
 
     // Set the hours display on the website
-    document.getElementById("labhours")!.textContent = hoursText;
+    Array.from(document.getElementsByClassName("labhours")).forEach((e) => {
+        e.textContent = hoursText;
+    });
 
     // Update hours again at midnight
     const now = new Date();
-    const tomorrow = new Date(now.getTime() + (24 * 60 * 60 * 1000));
+    const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
     tomorrow.setHours(0, 0, 30);
 
     setTimeout(() => {
