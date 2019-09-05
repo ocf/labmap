@@ -429,13 +429,13 @@
 
         <path class="st20" d="M1336,182.8l-0.2,81.2l105.8,61.1l0.2-81.2L1336,182.8z M1340.5,190.7l96.7,55.9l-0.2,70.8l-96.7-55.9
             L1340.5,190.7z"/>
-    <!-- To obtain a recursive TV screen effect, below svg was copied from the entire original svg with serval changes.
+    <!-- To obtain a recursive TV screen effect, below svg was copied from the entire original svg with several changes.
         1. There are tweaks to the width, height, x, y, preserveAspectRatio attributes on the svg tag in order for the
         screen to fit into the TV frame. The approach may be a bit brute-force, but it shouldn't be hard to calibrate
         to pixel-level-accuracy with the browser dev tool. See also #tv-pic CSS rules added in day.scss.
         2. Since there are now 2 svgs and duplicate elements, two of the ids attributes are changed to class attributes. See also script.js.
         3. Attributes like id="c1" are removed. Don't need to hover on the computers on the TV screen to show tooltips.
-        4. Nested TV screen in the TV screen (recursion yeah!) is basically replaced with a white square. Look in the code below if interested.
+        4. Nested TV screen in the TV screen (recursion yeah!) is basically replaced with a white square. Look into the code below if interested.
     -->
     <g id="tv-pic">
             <svg version="1.1" width="97px" height="72px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="1340px" y="-583px"
