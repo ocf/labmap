@@ -164,16 +164,16 @@ function updateTheme(): void {
 // Called every second
 function updateClock(): void {
     const time = new Date();
-    const clockTextElm = document.getElementById("clock-text");
+    const clockTextElms = document.getElementsByClassName("clock-text");
     let formattedTimeText = time.toLocaleString("en-US", { hour: "numeric", minute: "numeric", hour12: true });
     if (time.getSeconds() % 2) { // to make the blinking effect
         formattedTimeText = formattedTimeText.replace(":", " ");
     }
-    if (clockTextElm == null) {
-        console.log("clock text element not found");
-    } else {
-        clockTextElm.textContent = formattedTimeText;
-    }
+
+    [...clockTextElms].forEach((e) => {
+        e.textContent = formattedTimeText;
+    });
+
 }
 
 // Called whenever we get new information about which desktops are in use
@@ -219,7 +219,7 @@ function updateDesktops(desktopsInUse: Iterable<string>): void {
 function updateHours(hoursListing: TimeRange[]): void {
     todaysHours = hoursListing;
 
-    let hoursText;
+    let hoursText = "";
     if (todaysHours.length === 0) {
         hoursText = "Closed all day";
     } else {
@@ -230,8 +230,9 @@ function updateHours(hoursListing: TimeRange[]): void {
     }
 
     // Set the hours display on the website
-    document.getElementById("labhours")!.textContent = hoursText;
-
+    [...(document.getElementsByClassName("labhours"))].forEach((e) => {
+        e.textContent = hoursText;
+    });
     // Update hours again at midnight
     const now = new Date();
     const tomorrow = new Date(now.getTime() + (24 * 60 * 60 * 1000));
@@ -241,6 +242,49 @@ function updateHours(hoursListing: TimeRange[]): void {
         getHoursToday().then(updateHours);
     }, tomorrow.getTime() - now.getTime());
 }
+
+// Add a recursive TV screen synchronous with the main screen.
+const addTVScreen = () => {
+    const tv = document.getElementById("tv");
+
+    // Using createElementNS() to create <g>, for otherwise <g> appended to DOM SVG won't be reflected.
+    // https://stackoverflow.com/questions/3642035/jquerys-append-not-working-with-svg-element
+    const tvScreenWrapper = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+    // Style transform is applied to a wrapper <g>, because directly applying to <svg> doesn't work in Chrome.
+    tvScreenWrapper.setAttribute("style", "transform: skewY(30deg);");
+
+    const tvScreen = document.querySelector("body svg")!.cloneNode(true) as HTMLElement;
+    tvScreen.setAttribute("width", "98px");
+    tvScreen.setAttribute("height", "72px");
+    tvScreen.setAttribute("x", "1340px");
+    // The offset might seem strange. It's because we skewed its containing <g>.
+    tvScreen.setAttribute("y", "-584px");
+    tvScreen.setAttribute("preserveAspectRatio", "none");
+
+    // Remove desktops' IDs in the screen. No need to show tooltips inside TV screen.
+    const desktops = tvScreen.querySelector("#Desktops");
+    [...desktops!.children].forEach((desktop) => {
+        (desktop as HTMLElement).removeAttribute("id");
+    });
+
+    // Add a TV screen inside the TV screen. Recursion base case. :P
+    const innerTV = tvScreen.querySelector("#tv");
+    const innerTvScreen = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+    // Basically a blank TV screen. Taken from original SVG code.
+    // Filled with a single color according to the theme. See day/night.scss.
+    innerTvScreen.innerHTML = `
+    <polygon class="innerTvScreen" points="1336,182.8 1441.8,243.9 1441.6,325.2 1335.8,264.1             "></polygon>
+
+    <polygon class="st18" points="1445.6,241.7 1441.8,243.9 1441.6,325.2 1445.5,322.9             "></polygon>
+
+    <polygon class="st19" points="1445.6,241.7 1441.8,243.9 1336,182.8 1339.8,180.6             "></polygon>
+`;
+    innerTV!.appendChild(innerTvScreen);
+    tvScreenWrapper.appendChild(tvScreen);
+    tv!.appendChild(tvScreenWrapper);
+};
 
 // Start the HTTP request to get today's hours before the page finishes loading
 const promiseGetHours = getHoursToday();
@@ -269,4 +313,5 @@ window.onload = function() {
         // Every second, check if we need to switch to nightMode
         setInterval(updateTheme, 1000);
     });
+    addTVScreen();
 };
