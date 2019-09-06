@@ -1514,8 +1514,8 @@ Vue.component('lab-map', {
         </g>
         <text transform="matrix(1 0 0 1 1376.9951 1027.0986)" class="text-color text-font text-size-medium">Available Desktop :</text>
         <text transform="matrix(1 0 0 1 40.1084 97.6892)"><tspan :id="useId && 'labtext'" x="0" y="0" class="text-color text-font text-size-large">Today’s Hours:</tspan>
-        <tspan :id="useId && 'labhours'" x="0" y="86.4" class="text-color text-font text-size-large"></tspan></text>
-        <text transform="matrix(1 0 0 1 1560 97.6892)" class="text-color text-font text-size-large" :id="useId && 'clock-text'"></text>
+        <tspan x="0" y="86.4" class="labhours text-color text-font text-size-large"></tspan></text>
+        <text transform="matrix(1 0 0 1 1560 97.6892)" class="text-color text-font text-size-large clock-text"></text>
     </g>
     </svg>
     `

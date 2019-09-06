@@ -164,15 +164,17 @@ function updateTheme(): void {
 // Called every second
 function updateClock(): void {
     const time = new Date();
-    const clockTextElm = document.getElementById("clock-text");
+    const clockTextElms = document.getElementsByClassName("clock-text");
     let formattedTimeText = time.toLocaleString("en-US", { hour: "numeric", minute: "numeric", hour12: true });
     if (time.getSeconds() % 2) { // to make the blinking effect
         formattedTimeText = formattedTimeText.replace(":", " ");
     }
-    if (clockTextElm == null) {
+    if (clockTextElms == null) {
         console.log("clock text element not found");
     } else {
-        clockTextElm.textContent = formattedTimeText;
+        Array.from(clockTextElms).forEach((e) => {
+            e.textContent = formattedTimeText;
+        });
     }
 }
 
@@ -219,7 +221,7 @@ function updateDesktops(desktopsInUse: Iterable<string>): void {
 function updateHours(hoursListing: TimeRange[]): void {
     todaysHours = hoursListing;
 
-    let hoursText;
+    let hoursText = "";
     if (todaysHours.length === 0) {
         hoursText = "Closed all day";
     } else {
@@ -230,8 +232,9 @@ function updateHours(hoursListing: TimeRange[]): void {
     }
 
     // Set the hours display on the website
-    document.getElementById("labhours")!.textContent = hoursText;
-
+    Array.from(document.getElementsByClassName("labhours")).forEach((e) => {
+        e.textContent = hoursText;
+    });
     // Update hours again at midnight
     const now = new Date();
     const tomorrow = new Date(now.getTime() + (24 * 60 * 60 * 1000));
