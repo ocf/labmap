@@ -1,8 +1,8 @@
 Vue.component('lab-map', {
-    props: ["pos", "vbox", "useId"],
+    props: ["pos", "vbox", "useId", "size"],
     template: `
     <!-- Generator: Adobe Illustrator 21.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" :x="pos.x + 'px'" y="pos.y + 'px'"
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none" :x="pos.x + 'px'" :y="pos.y + 'px'" :width="size && size.width" :height="size && size.height"
         :viewBox="vbox.x0 + ' ' + vbox.y0 + ' ' + vbox.x1 + ' ' + vbox.y1" :style="{ 'enable-background': 'new ' + vbox.x0 + ' ' + vbox.y0 + ' ' + vbox.x1 + ' ' + vbox.y1 }" xml:space="preserve">
     <g :id="useId && 'Background'">
         <linearGradient Gradient-BG gradientUnits="userSpaceOnUse" x1="6.1731" y1="-10.6922" x2="1913.8269" y2="1090.6921">
