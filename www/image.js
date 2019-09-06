@@ -414,7 +414,7 @@ Vue.component('lab-map', {
         </g>
         <g>
             <g>
-                <slot></slot>                
+                <g style="transform: skewY(30deg)"><slot></slot></g>
                 <polygon class="st18" points="1445.6,241.7 1441.8,243.9 1441.6,325.2 1445.5,322.9             "/>
                 <polygon class="st19" points="1445.6,241.7 1441.8,243.9 1336,182.8 1339.8,180.6             "/>
             </g>
