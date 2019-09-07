@@ -169,13 +169,10 @@ function updateClock(): void {
     if (time.getSeconds() % 2) { // to make the blinking effect
         formattedTimeText = formattedTimeText.replace(":", " ");
     }
-    if (clockTextElms == null) {
-        console.log("clock text element not found");
-    } else {
-        Array.from(clockTextElms).forEach((e) => {
-            e.textContent = formattedTimeText;
-        });
-    }
+
+    Array.from(clockTextElms).forEach((e) => {
+        e.textContent = formattedTimeText;
+    });
 }
 
 // Called whenever we get new information about which desktops are in use
