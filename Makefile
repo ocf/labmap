@@ -34,8 +34,8 @@ node_modules: venv package.json package-lock.json
 
 venv: requirements.txt
 	vendor/venv-update \
-					venv= $@ -ppython3 \
-					install= -r requirements.txt -r requirements-dev.txt
+		venv= $@ -ppython3 \
+		install= -r requirements.txt -r requirements-dev.txt
 
 .PHONY: clean
 clean:
@@ -44,3 +44,11 @@ clean:
 .PHONY: update-requirements
 update-requirements: venv
 	$(BIN)/upgrade-requirements
+
+.PHONY: install-hooks
+install-hooks: venv
+	venv/bin/pre-commit install -f --install-hooks
+
+.PHONY: test
+test: venv compile
+	venv/bin/pre-commit run --all-files
