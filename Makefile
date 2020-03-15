@@ -34,7 +34,7 @@ node_modules: venv package.json package-lock.json
 
 venv: requirements.txt
 	vendor/venv-update \
-		venv= $@ -ppython3 \
+		venv= $@ -ppython3.7 \
 		install= -r requirements.txt -r requirements-dev.txt
 
 .PHONY: clean
