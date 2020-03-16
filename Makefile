@@ -33,7 +33,10 @@ node_modules: venv package.json package-lock.json
 	$(NPM) install
 
 venv: requirements.txt
-	vendor/venv-update \
+	# Acquire a lock file to touch the virtualenv. This prevents competing test
+	# and cook-image jobs from both trying to write out the virtualenv at the
+	# same time as happened after merging https://github.com/ocf/labmap/pull/21.
+	flock venv.lock vendor/venv-update \
 		venv= $@ -ppython3.7 \
 		install= -r requirements.txt -r requirements-dev.txt
 
