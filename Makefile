@@ -53,5 +53,5 @@ install-hooks: venv
 	venv/bin/pre-commit install -f --install-hooks
 
 .PHONY: test
-test: venv compile
+test: venv
 	venv/bin/pre-commit run --all-files
