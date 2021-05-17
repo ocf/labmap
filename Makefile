@@ -54,4 +54,4 @@ install-hooks: venv
 
 .PHONY: test
 test: venv
-	venv/bin/pre-commit run --all-files
+	venv/bin/pre-commit run --all-files --show-diff-on-failure
