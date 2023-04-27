@@ -1,6 +1,6 @@
 FROM node:20-alpine
 COPY package.json package-lock.json ./
-RUN NODE_ENV=production npm ci
+RUN npm ci
 COPY . .
 RUN npm run build
 
