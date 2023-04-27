@@ -1,16 +1,8 @@
-FROM docker.ocf.berkeley.edu/theocf/debian:buster
+FROM node:20-alpine
+COPY package.json package-lock.json ./
+RUN NODE_ENV=production npm ci
+COPY . .
+RUN npm run build
 
-RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        nginx \
-        python3 \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-
-COPY www /srv/www
-COPY nginx.conf /srv/
-
-USER nobody
-
-CMD ["nginx", "-c", "/srv/nginx.conf", "-p", "/tmp"]
+FROM lipanski/docker-static-website:2.1.0
+COPY --from=0 /dist ./

@@ -18,6 +18,7 @@
     "typescript": "^3.8.3"
   },
   "scripts": {
+    "build": "cp -r public dist && tsc && sass src:dist/build",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "tslint": "tslint -p tsconfig.json"

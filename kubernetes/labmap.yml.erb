@@ -7,7 +7,7 @@ spec:
     app: labmap
   ports:
     - port: 80
-      targetPort: 8000
+      targetPort: 3000
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -33,7 +33,7 @@ spec:
               memory: 128Mi
               cpu: 50m
           ports:
-            - containerPort: 8000
+            - containerPort: 3000
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress

@@ -1,3 +1,0 @@
-nodeenv
-pre-commit
-requirements-tools

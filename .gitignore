@@ -1,5 +1,4 @@
 node_modules/
-www/script.js
-/venv
+dist/
 .DS_Store
 venv.lock
