@@ -33,4 +33,4 @@ def objects():
 
 
 def images():
-    yield Image(name="labmap", path=Path("/"))
+    yield Image(name="labmap", path=Path("/"), registry="ghcr")
